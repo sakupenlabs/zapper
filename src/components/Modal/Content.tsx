@@ -42,6 +42,11 @@ const CloseContainer = styled.div`
   & > svg {
     display: block;
   }
+
+  &:hover {
+    background: ${({ theme }) => theme.neutral1};
+    color: ${({ theme }) => theme.bg1};
+  }
 `
 
 interface ContentProps {
