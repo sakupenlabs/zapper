@@ -7,10 +7,40 @@ import { ThemedText } from 'theme/components'
 const StyledOption = styled(Row)`
   padding: 8px;
   cursor: pointer;
-  transition-duration: 125;
+  position: relative;
+  width: 100%;
+  border: 2px solid transparent;
+
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: -2px;
+    bottom: -2px;
+    left: 8px;
+    right: 8px;
+    background: ${({ theme }) => theme.bg1};
+    z-index: 1;
+  }
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    left: -2px;
+    right: -2px;
+    background: ${({ theme }) => theme.bg1};
+    z-index: 1;
+  }
 
   &:hover {
-    text-decoration: underline;
+    border-color: ${({ theme }) => theme.neutral1};
+  }
+
+  & > * {
+    z-index: 2;
   }
 `
 
