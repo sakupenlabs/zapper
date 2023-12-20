@@ -4,6 +4,8 @@ const colors = {
   white: '#FFFFFF',
   black: '#000000',
 
+  error_dark: '#ff0030',
+
   neutral1_dark: '#f7f7f7',
 }
 
@@ -18,4 +20,5 @@ export const darkTheme = {
   bg1: colors.black,
 
   neutral1: colors.neutral1_dark,
+  error: colors.error_dark,
 }

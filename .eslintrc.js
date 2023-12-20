@@ -38,5 +38,11 @@ module.exports = {
         ],
       },
     },
+    {
+      files: ['**/*.ts', '**/*.tsx'],
+      rules: {
+        'no-restricted-imports': ['error'],
+      },
+    },
   ],
 }

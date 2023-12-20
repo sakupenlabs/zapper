@@ -3,7 +3,7 @@ import { createGlobalStyle, ThemeProvider as StyledComponentsThemeProvider } fro
 
 import { darkTheme } from './colors'
 
-const MAX_CONTENT_WIDTH = '1200px'
+const MAX_CONTENT_WIDTH = '720px'
 
 const BREAKPOINTS = {
   xs: 396,

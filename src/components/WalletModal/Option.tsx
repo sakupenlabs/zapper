@@ -9,14 +9,14 @@ const StyledOption = styled(Row)`
   cursor: pointer;
   position: relative;
   width: 100%;
-  border: 2px solid transparent;
+  border: 3px solid transparent;
 
   &::before {
     content: '';
     display: block;
     position: absolute;
-    top: -2px;
-    bottom: -2px;
+    top: -3px;
+    bottom: -3px;
     left: 8px;
     right: 8px;
     background: ${({ theme }) => theme.bg1};
@@ -29,8 +29,8 @@ const StyledOption = styled(Row)`
     position: absolute;
     top: 8px;
     bottom: 8px;
-    left: -2px;
-    right: -2px;
+    left: -3px;
+    right: -3px;
     background: ${({ theme }) => theme.bg1};
     z-index: 1;
   }
