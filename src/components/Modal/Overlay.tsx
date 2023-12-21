@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 
 const StyledOverlay = styled.div`
-  opacity: 0.7;
   top: 0;
   left: 0;
   bottom: 0;
@@ -9,6 +8,10 @@ const StyledOverlay = styled.div`
   position: fixed;
   background: ${({ theme }) => theme.black};
   z-index: 1040;
+
+  @media only screen and (min-width: ${({ theme }) => `${theme.breakpoint.xs}px`}) {
+    opacity: 0.7;
+  }
 `
 
 interface OverlayProps {

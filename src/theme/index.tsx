@@ -6,7 +6,7 @@ import { darkTheme } from './colors'
 const MAX_CONTENT_WIDTH = '720px'
 
 const BREAKPOINTS = {
-  xs: 396,
+  xs: 480,
   sm: 640,
   md: 768,
   lg: 1024,

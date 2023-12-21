@@ -15,8 +15,8 @@ const StyledOption = styled(Row)`
     content: '';
     display: block;
     position: absolute;
-    top: -3px;
-    bottom: -3px;
+    top: -4px;
+    bottom: -4px;
     left: 8px;
     right: 8px;
     background: ${({ theme }) => theme.bg1};
@@ -29,8 +29,8 @@ const StyledOption = styled(Row)`
     position: absolute;
     top: 8px;
     bottom: 8px;
-    left: -3px;
-    right: -3px;
+    left: -4px;
+    right: -4px;
     background: ${({ theme }) => theme.bg1};
     z-index: 1;
   }

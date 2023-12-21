@@ -7,6 +7,7 @@ const colors = {
   error_dark: '#ff0030',
 
   neutral1_dark: '#f7f7f7',
+  accent1_dark: '#e1e71d',
 }
 
 const commonTheme = {
@@ -22,4 +23,5 @@ export const darkTheme = {
 
   neutral1: colors.neutral1_dark,
   error: colors.error_dark,
+  accent1: colors.accent1_dark,
 }

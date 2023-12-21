@@ -5,26 +5,44 @@ import { ThemedText } from 'theme/components'
 
 const StyledContent = styled.div`
   border: 3px solid ${({ theme }) => theme.neutral1};
-  padding: 32px;
+  padding: 80px 32px;
   background: ${({ theme }) => theme.bg1};
   z-index: 1060;
   position: fixed;
-  left: 50%;
-  top: 50%;
-  width: 386px;
-  transform: translate(-50%, -50%);
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  @media only screen and (min-width: ${({ theme }) => `${theme.breakpoint.xs}px`}) {
+    left: 50%;
+    top: 50%;
+    width: 386px;
+    transform: translate(-50%, -50%);
+    padding: 32px;
+    bottom: unset;
+  }
 `
 
 const TitleContainer = styled(Row)`
   position: absolute;
-  top: -32px;
   width: 100%;
   padding: 0 4px;
+  text-align: center;
+  top: 16px;
 
   & > div {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    width: 100%;
+  }
+
+  @media only screen and (min-width: ${({ theme }) => `${theme.breakpoint.xs}px`}) {
+    top: -32px;
+    text-align: left;
   }
 `
 

@@ -12,8 +12,8 @@ export default function useBalances(tokens: Token[]) {
   const { address: accountAddress } = useAccount()
 
   const res = useContractRead({
-    abi: accountAddress ? compiledMulticall : undefined, // call is not send if abi is undefined
-    address: MULTICALL_ADDRESS,
+    abi: compiledMulticall, // call is not send if abi is undefined
+    address: accountAddress ? MULTICALL_ADDRESS : undefined,
     functionName: 'aggregate',
     watch: true,
     args: [

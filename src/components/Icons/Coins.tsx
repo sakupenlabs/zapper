@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unused-modules */
 import { FC } from 'react'
 
 export const CoinsIcon: FC<React.SVGProps<SVGSVGElement>> = (props) => (

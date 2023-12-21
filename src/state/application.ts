@@ -1,3 +1,4 @@
+import { Token } from 'constants/tokens'
 import { StateCreator } from 'zustand'
 
 import { StoreState } from './index'
@@ -11,6 +12,7 @@ export type ApplicationSlice = State & Actions
 
 interface State {
   modal: ModalType | null
+  selectedToken: Token | null
 }
 
 interface Actions {
@@ -18,6 +20,9 @@ interface Actions {
   openModal: (modal: ModalType) => void
   closeModals: () => void
   toggleModal: (modal: ModalType) => void
+
+  selectToken: (token: Token) => void
+  deselectToken: () => void
 }
 
 export const createApplicationSlice: StateCreator<StoreState, [['zustand/immer', never]], [], ApplicationSlice> = (
@@ -25,9 +30,13 @@ export const createApplicationSlice: StateCreator<StoreState, [['zustand/immer',
   get
 ) => ({
   modal: null,
+  selectedToken: null,
 
   isModalOpened: (modal) => get().modal === modal,
   openModal: (modal) => set({ modal }),
   closeModals: () => set({ modal: null }),
   toggleModal: (modal: ModalType) => set((state) => ({ modal: modal === state.modal ? null : modal })),
+
+  selectToken: (token: Token) => set({ selectedToken: token }),
+  deselectToken: () => set({ selectedToken: null }),
 })
