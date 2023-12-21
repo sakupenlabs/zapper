@@ -17,7 +17,8 @@ const commonTheme = {
 export const darkTheme = {
   ...commonTheme,
 
-  bg1: colors.black,
+  bg1: '#0b0d0f',
+  bg2: '#1c2127',
 
   neutral1: colors.neutral1_dark,
   error: colors.error_dark,

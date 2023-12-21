@@ -1,7 +1,7 @@
 import { useAccount, useContractRead, UseContractReadResult } from '@starknet-react/core'
 import { Fraction } from '@uniswap/sdk-core'
 import { compiledMulticall, MULTICALL_ADDRESS } from 'constants/contracts'
-import { BALANCE_OF_SELECTOR } from 'constants/misc'
+import { BALANCE_OF_CAMEL_SELECTOR, BALANCE_OF_SELECTOR } from 'constants/misc'
 import { Token } from 'constants/tokens'
 import { useMemo } from 'react'
 import { CallStruct, uint256 } from 'starknet'
@@ -20,7 +20,7 @@ export default function useBalances(tokens: Token[]) {
       tokens.map(
         (token): CallStruct => ({
           to: token.address,
-          selector: BALANCE_OF_SELECTOR,
+          selector: token.camelCased ? BALANCE_OF_CAMEL_SELECTOR : BALANCE_OF_SELECTOR,
           calldata: [accountAddress ?? ''],
         })
       ),
@@ -42,5 +42,7 @@ export default function useBalances(tokens: Token[]) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [res.data?.[0].toString()])
 
-  return { data, loading: res.fetchStatus === 'fetching', error: res.error }
+  return { data, loading: res.fetchStatus === 'fetching', error: res.error, refetch: res.refetch }
 }
+
+export type Balances = NonNullable<ReturnType<typeof useBalances>['data']>
