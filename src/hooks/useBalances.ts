@@ -5,10 +5,13 @@ import { BALANCE_OF_CAMEL_SELECTOR, BALANCE_OF_SELECTOR } from 'constants/misc'
 import { Token } from 'constants/tokens'
 import { useMemo } from 'react'
 import { CallStruct, uint256 } from 'starknet'
+import { decimalsScale } from 'utils/decimals'
 
 type UseBalancesResult = UseContractReadResult & { data?: [bigint, [bigint, bigint][]] }
 
-export default function useBalances(tokens: Token[]) {
+type UseBalancesToken = Pick<Token, 'address' | 'camelCased' | 'decimals'>
+
+export default function useBalances(tokens: UseBalancesToken[]) {
   const { address: accountAddress } = useAccount()
 
   const res = useContractRead({
@@ -34,7 +37,7 @@ export default function useBalances(tokens: Token[]) {
       const token = tokens[index]
       acc[token.address] = new Fraction(
         uint256.uint256ToBN({ low: balance[0], high: balance[1] }).toString(),
-        `1${Array(token.decimals).fill('0').join('')}`
+        decimalsScale(token.decimals)
       )
 
       return acc

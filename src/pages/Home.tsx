@@ -6,11 +6,13 @@ import Inventory from 'components/Inventory'
 import Slot from 'components/Inventory/Slots'
 import Toggle from 'components/Toggle'
 import { OWL, TOKENS_LIST } from 'constants/tokens'
+import { useQuotes, UseQuotesTokenFrom } from 'hooks/useAvnu'
 import useBalances from 'hooks/useBalances'
 import useToken from 'hooks/useToken'
 import { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { ThemedText } from 'theme/components'
+import { decimalsScale } from 'utils/decimals'
 
 const Section = styled.section`
   display: flex;
@@ -101,37 +103,51 @@ export default function HomePage() {
 
   const { address: accountAddress } = useAccount()
 
-  const { data, loading, error, refetch } = useBalances(TOKENS_LIST)
-
-  const { selectedToken } = useToken()
+  // balances
+  const balances = useBalances(TOKENS_LIST)
 
   const status = useMemo(() => {
     if (!accountAddress) return 'No wallet connected.'
 
-    if (loading) return 'Loading...'
+    if (balances.loading) return 'Loading...'
 
     return <>&nbsp;</>
-  }, [accountAddress, loading])
+  }, [accountAddress, balances.loading])
+
+  // quotes
+  const tokensFrom = useMemo(
+    (): UseQuotesTokenFrom[] =>
+      TOKENS_LIST.map((token) => ({
+        address: token.address,
+        decimals: token.decimals,
+        amount: balances.data?.[token.address].multiply(decimalsScale(token.decimals)).quotient.toString() ?? 0,
+      })).filter(({ amount }) => +amount),
+    [balances.data]
+  )
+  const buyAmount = useQuotes(tokensFrom, OWL.address)
+
+  // token selection
+  const { selectedToken } = useToken()
 
   const selectedTokenInfos = useMemo(() => {
     if (selectedToken) {
-      const balance = data?.[selectedToken.address]
-      return `${selectedToken.symbol} ${balance ? balance.toFixed(6, { groupSeparator: ',' }) : ''}`
+      const balance = selectedToken.address === OWL.address ? buyAmount : balances.data?.[selectedToken.address]
+      return `${selectedToken.symbol} ${balance ? balance.toSignificant(6, { groupSeparator: ',' }) : ''}`
     }
 
     return <>&nbsp;</>
-  }, [data, selectedToken])
+  }, [balances.data, selectedToken, buyAmount])
 
-  if (error) {
-    console.error(error)
+  if (balances.error) {
+    console.error(balances.error)
   }
 
   return (
     <Section>
-      {accountAddress && error ? (
+      {accountAddress && balances.error ? (
         <Column gap={8}>
           <Error>Error.</Error>
-          <Retry onClick={() => refetch()}>Retry</Retry>
+          <Retry onClick={() => balances.refetch()}>Retry</Retry>
         </Column>
       ) : (
         <FirstArticle>
@@ -139,7 +155,7 @@ export default function HomePage() {
             <Status>{status}</Status>
 
             <InventoryContainer>
-              <Inventory balances={data ?? {}} />
+              <Inventory balances={balances.data ?? {}} />
             </InventoryContainer>
 
             <SelectedTokenInfos>{selectedTokenInfos}</SelectedTokenInfos>
@@ -163,7 +179,7 @@ export default function HomePage() {
               <ArrowIcon />
             </ArrowIconContainer>
 
-            <Slot token={OWL} />
+            <Slot token={OWL} balance={buyAmount} />
           </AllInContainer>
         </FirstArticle>
       )}

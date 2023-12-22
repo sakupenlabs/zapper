@@ -35,7 +35,7 @@ export default function Inventory({ balances }: InventoryProps) {
   const width = useMemo(() => cols * (SLOT_WIDTH + GAP) - GAP, [cols])
 
   const filteredTokenList = useMemo(
-    () => TOKENS_LIST.filter((token) => +(balances[token.address]?.toFixed(2) ?? 0)),
+    () => TOKENS_LIST.filter((token) => balances[token.address] && !balances[token.address].equalTo(0)),
     [balances]
   )
 
@@ -47,13 +47,7 @@ export default function Inventory({ balances }: InventoryProps) {
   return (
     <StyledInventory width={width} cols={cols}>
       {filteredTokenList.map((token) => (
-        <Slot
-          key={token.address}
-          token={token}
-          balance={Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 }).format(
-            +balances[token.address].toFixed(2)
-          )}
-        />
+        <Slot key={token.address} token={token} balance={balances[token.address]} />
       ))}
 
       {Array(emptySlotsCount)

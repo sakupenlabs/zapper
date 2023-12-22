@@ -1,8 +1,10 @@
+import { Fraction } from '@uniswap/sdk-core'
 import slotActive from 'assets/slot.active.svg'
 import slot from 'assets/slot.svg'
 import { Row } from 'components/Flex'
 import { Token } from 'constants/tokens'
 import useToken from 'hooks/useToken'
+import { useMemo } from 'react'
 import styled from 'styled-components'
 import { ThemedText } from 'theme/components'
 
@@ -55,11 +57,23 @@ const Balance = styled(ThemedText.BodyPrimary)`
 
 interface SlotProps extends React.HTMLAttributes<HTMLDivElement> {
   token?: Token
-  balance?: string
+  balance?: Fraction
 }
 
 export default function Slot({ token, balance, ...props }: SlotProps) {
   const { selectToken, deselectToken } = useToken()
+
+  const parsedBalance = useMemo(() => {
+    if (!balance) return ''
+
+    const numBalance = +balance.toFixed(2)
+
+    if (numBalance) {
+      return Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 }).format(numBalance)
+    }
+
+    return '>0.01'
+  }, [balance])
 
   return (
     <StyledSlot
@@ -70,7 +84,7 @@ export default function Slot({ token, balance, ...props }: SlotProps) {
       {!!token && (
         <>
           <CoinsIconContainer>{token.getIcon()}</CoinsIconContainer>
-          <Balance>{balance ?? ''}</Balance>
+          <Balance>{parsedBalance}</Balance>
         </>
       )}
     </StyledSlot>
