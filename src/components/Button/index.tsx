@@ -19,8 +19,13 @@ export const SecondaryButton = styled.button`
   -ms-user-select: none;
   user-select: none;
 
-  &:active {
+  &:enabled:active {
     transform: translateY(2px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
   }
 
   &::before {

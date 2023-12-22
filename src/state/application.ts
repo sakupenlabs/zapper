@@ -32,8 +32,8 @@ export const createApplicationSlice: StateCreator<StoreState, [['zustand/immer',
   modal: null,
   selectedToken: null,
 
-  isModalOpened: (modal) => get().modal === modal,
-  openModal: (modal) => set({ modal }),
+  isModalOpened: (modal: ModalType) => get().modal === modal,
+  openModal: (modal: ModalType) => set({ modal }),
   closeModals: () => set({ modal: null }),
   toggleModal: (modal: ModalType) => set((state) => ({ modal: modal === state.modal ? null : modal })),
 

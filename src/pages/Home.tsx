@@ -1,4 +1,4 @@
-import { useAccount } from '@starknet-react/core'
+import { useAccount, useContractWrite } from '@starknet-react/core'
 import { SecondaryButton } from 'components/Button'
 import { Column } from 'components/Flex'
 import { ArrowIcon } from 'components/Icons/Arrow'
@@ -6,10 +6,10 @@ import Inventory from 'components/Inventory'
 import Slot from 'components/Inventory/Slots'
 import Toggle from 'components/Toggle'
 import { OWL, TOKENS_LIST } from 'constants/tokens'
-import { useQuotes, UseQuotesTokenFrom } from 'hooks/useAvnu'
+import { useAggregateQuotes, useQuotes, UseQuotesTokenFrom, useSwapBuilder } from 'hooks/useAvnu'
 import useBalances from 'hooks/useBalances'
 import useToken from 'hooks/useToken'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { ThemedText } from 'theme/components'
 import { decimalsScale } from 'utils/decimals'
@@ -102,17 +102,10 @@ export default function HomePage() {
   const [slippageIndex, setSlippageIndex] = useState(0)
 
   const { address: accountAddress } = useAccount()
+  const { writeAsync, isPending } = useContractWrite({})
 
   // balances
   const balances = useBalances(TOKENS_LIST)
-
-  const status = useMemo(() => {
-    if (!accountAddress) return 'No wallet connected.'
-
-    if (balances.loading) return 'Loading...'
-
-    return <>&nbsp;</>
-  }, [accountAddress, balances.loading])
 
   // quotes
   const tokensFrom = useMemo(
@@ -124,7 +117,8 @@ export default function HomePage() {
       })).filter(({ amount }) => +amount),
     [balances.data]
   )
-  const buyAmount = useQuotes(tokensFrom, OWL.address)
+  const quotes = useQuotes(tokensFrom, OWL.address)
+  const buyAmount = useAggregateQuotes(quotes.data)
 
   // token selection
   const { selectedToken } = useToken()
@@ -137,6 +131,28 @@ export default function HomePage() {
 
     return <>&nbsp;</>
   }, [balances.data, selectedToken, buyAmount])
+
+  // ALL IN
+  const buildSwap = useSwapBuilder(SLIPPAGES[slippageIndex])
+  const allIn = useCallback(async () => {
+    try {
+      const calls = await buildSwap(quotes.data)
+      await writeAsync({ calls })
+    } catch (err) {
+      console.error(err)
+    }
+  }, [buildSwap, writeAsync, quotes.data])
+
+  // error loading
+  const loading = balances.loading || quotes.loading || isPending
+
+  const status = useMemo(() => {
+    if (!accountAddress) return 'No wallet connected.'
+
+    if (loading) return 'Loading...'
+
+    return <>&nbsp;</>
+  }, [accountAddress, loading])
 
   if (balances.error) {
     console.error(balances.error)
@@ -172,7 +188,9 @@ export default function HomePage() {
                 />
               </Column>
 
-              <ZapButton>ALL IN</ZapButton>
+              <ZapButton disabled={loading || !quotes.data.length} onClick={allIn}>
+                {isPending ? 'Signing...' : 'ALL IN'}
+              </ZapButton>
             </Column>
 
             <ArrowIconContainer>

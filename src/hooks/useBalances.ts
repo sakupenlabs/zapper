@@ -7,11 +7,17 @@ import { useMemo } from 'react'
 import { CallStruct, uint256 } from 'starknet'
 import { decimalsScale } from 'utils/decimals'
 
-type UseBalancesResult = UseContractReadResult & { data?: [bigint, [bigint, bigint][]] }
+type Balance = Fraction
+export type Balances = Record<string, Balance>
+
+interface UseBalancesResult extends Pick<UseContractReadResult, 'error' | 'refetch'> {
+  data?: Balances
+  loading: boolean
+}
 
 type UseBalancesToken = Pick<Token, 'address' | 'camelCased' | 'decimals'>
 
-export default function useBalances(tokens: UseBalancesToken[]) {
+export default function useBalances(tokens: UseBalancesToken[]): UseBalancesResult {
   const { address: accountAddress } = useAccount()
 
   const res = useContractRead({
@@ -28,7 +34,7 @@ export default function useBalances(tokens: UseBalancesToken[]) {
         })
       ),
     ],
-  }) as UseBalancesResult
+  }) as UseContractReadResult & { data?: [bigint, [bigint, bigint][]] }
 
   const data = useMemo(() => {
     if (!res.data) return undefined
@@ -47,5 +53,3 @@ export default function useBalances(tokens: UseBalancesToken[]) {
 
   return { data, loading: res.fetchStatus === 'fetching', error: res.error, refetch: res.refetch }
 }
-
-export type Balances = NonNullable<ReturnType<typeof useBalances>['data']>
