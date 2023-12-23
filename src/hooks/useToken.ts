@@ -5,5 +5,8 @@ export default function useToken() {
     selectedToken: state.selectedToken,
     selectToken: state.selectToken,
     deselectToken: state.deselectToken,
+
+    disabledTokenAddresses: state.disabledTokenAddresses,
+    toggleTokenAddress: state.toggleTokenAddress,
   }))
 }

@@ -11,14 +11,16 @@ export interface Token {
   getIcon: () => JSX.Element
 }
 
+export const ETH: Token = {
+  address: '0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
+  symbol: 'ETH',
+  decimals: 18,
+  camelCased: true,
+  getIcon: () => <EtherIcon />,
+}
+
 export const TOKENS_LIST: Token[] = [
-  {
-    address: '0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
-    symbol: 'ETH',
-    decimals: 18,
-    camelCased: true,
-    getIcon: () => <EtherIcon />,
-  },
+  ETH,
   {
     address: '0x06f15ec4b6ff0b7f7a216c4b2ccdefc96cbf114d6242292ca82971592f62273b',
     symbol: 'SPEPE',

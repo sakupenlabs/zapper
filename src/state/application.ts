@@ -1,4 +1,4 @@
-import { Token } from 'constants/tokens'
+import { ETH, Token } from 'constants/tokens'
 import { StateCreator } from 'zustand'
 
 import { StoreState } from './index'
@@ -13,6 +13,7 @@ export type ApplicationSlice = State & Actions
 interface State {
   modal: ModalType | null
   selectedToken: Token | null
+  disabledTokenAddresses: Record<Token['address'], boolean>
 }
 
 interface Actions {
@@ -23,6 +24,8 @@ interface Actions {
 
   selectToken: (token: Token) => void
   deselectToken: () => void
+
+  toggleTokenAddress: (tokenAddress: Token['address']) => void
 }
 
 export const createApplicationSlice: StateCreator<StoreState, [['zustand/immer', never]], [], ApplicationSlice> = (
@@ -31,6 +34,7 @@ export const createApplicationSlice: StateCreator<StoreState, [['zustand/immer',
 ) => ({
   modal: null,
   selectedToken: null,
+  disabledTokenAddresses: { [ETH.address]: true },
 
   isModalOpened: (modal: ModalType) => get().modal === modal,
   openModal: (modal: ModalType) => set({ modal }),
@@ -39,4 +43,12 @@ export const createApplicationSlice: StateCreator<StoreState, [['zustand/immer',
 
   selectToken: (token: Token) => set({ selectedToken: token }),
   deselectToken: () => set({ selectedToken: null }),
+
+  toggleTokenAddress: (tokenAddress: Token['address']) =>
+    set((state) => ({
+      disabledTokenAddresses: {
+        ...state.disabledTokenAddresses,
+        [tokenAddress]: !state.disabledTokenAddresses[tokenAddress],
+      },
+    })),
 })

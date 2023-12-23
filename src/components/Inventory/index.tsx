@@ -1,10 +1,11 @@
 import { TOKENS_LIST } from 'constants/tokens'
 import { Balances } from 'hooks/useBalances'
+import useToken from 'hooks/useToken'
 import useWindowSize from 'hooks/useWindowSize'
 import { useMemo } from 'react'
 import styled from 'styled-components'
 
-import Slot, { SLOT_WIDTH } from './Slots'
+import Slot, { SLOT_WIDTH } from './Slot'
 
 const MAX_COLS = 7
 const GAP = 4
@@ -44,16 +45,25 @@ export default function Inventory({ balances }: InventoryProps) {
     [cols, filteredTokenList.length]
   )
 
+  // tokens
+  const { disabledTokenAddresses, toggleTokenAddress } = useToken()
+
   return (
     <StyledInventory width={width} cols={cols}>
       {filteredTokenList.map((token) => (
-        <Slot key={token.address} token={token} balance={balances[token.address]} />
+        <Slot
+          key={token.address}
+          token={token}
+          balance={balances[token.address]}
+          onClick={() => toggleTokenAddress(token.address)}
+          disabled={disabledTokenAddresses[token.address]}
+        />
       ))}
 
       {Array(emptySlotsCount)
         .fill(0)
         .map((_, index) => (
-          <Slot key={index} />
+          <Slot key={index} disabled />
         ))}
     </StyledInventory>
   )

@@ -3,7 +3,7 @@ import { SecondaryButton } from 'components/Button'
 import { Column } from 'components/Flex'
 import { ArrowIcon } from 'components/Icons/Arrow'
 import Inventory from 'components/Inventory'
-import Slot from 'components/Inventory/Slots'
+import Slot from 'components/Inventory/Slot'
 import Toggle from 'components/Toggle'
 import { OWL, TOKENS_LIST } from 'constants/tokens'
 import { useAggregateQuotes, useQuotes, UseQuotesTokenFrom, useSwapBuilder } from 'hooks/useAvnu'
@@ -104,6 +104,9 @@ export default function HomePage() {
   const { address: accountAddress } = useAccount()
   const { writeAsync, isPending } = useContractWrite({})
 
+  // tokens
+  const { disabledTokenAddresses } = useToken()
+
   // balances
   const balances = useBalances(TOKENS_LIST)
 
@@ -114,8 +117,8 @@ export default function HomePage() {
         address: token.address,
         decimals: token.decimals,
         amount: balances.data?.[token.address].multiply(decimalsScale(token.decimals)).quotient.toString() ?? 0,
-      })).filter(({ amount }) => +amount),
-    [balances.data]
+      })).filter((token) => +token.amount && !disabledTokenAddresses[token.address]),
+    [balances.data, disabledTokenAddresses]
   )
   const quotes = useQuotes(tokensFrom, OWL.address)
   const buyAmount = useAggregateQuotes(quotes.data)

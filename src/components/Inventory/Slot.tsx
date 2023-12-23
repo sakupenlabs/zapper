@@ -10,7 +10,7 @@ import { ThemedText } from 'theme/components'
 
 export const SLOT_WIDTH = 94
 
-const StyledSlot = styled(Row)`
+const StyledSlot = styled(Row)<{ disabled: boolean }>`
   width: ${SLOT_WIDTH}px;
   height: ${SLOT_WIDTH}px;
   position: relative;
@@ -24,6 +24,8 @@ const StyledSlot = styled(Row)`
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none;
+
+  ${({ disabled = false }) => disabled && 'opacity: 0.3;'}
 
   &::after {
     top: 0;
@@ -58,6 +60,7 @@ const Balance = styled(ThemedText.BodyPrimary)`
 interface SlotProps extends React.HTMLAttributes<HTMLDivElement> {
   token?: Token
   balance?: Fraction
+  disabled?: boolean
 }
 
 export default function Slot({ token, balance, ...props }: SlotProps) {

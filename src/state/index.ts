@@ -6,7 +6,7 @@ import { ApplicationSlice, createApplicationSlice } from './application'
 
 export type StoreState = ApplicationSlice
 
-const PERSISTING_KEYS: (keyof StoreState)[] = []
+const PERSISTING_KEYS: (keyof StoreState)[] = ['disabledTokenAddresses']
 
 export const useBoundStore = create<StoreState>()(
   persist(

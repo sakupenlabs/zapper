@@ -31,6 +31,14 @@ export function useQuotes(tokensFrom: UseQuotesTokenFrom[], tokenAddressTo: stri
 
     const abortController = new AbortController()
 
+    // clean missing quotes from tokensFrom
+    setQuotes((state) =>
+      tokensFrom.reduce<typeof state>((acc, { address }) => {
+        acc[address] = state[address]
+        return acc
+      }, {})
+    )
+
     for (const tokenFrom of tokensFrom) {
       const params: QuoteRequest = {
         sellTokenAddress: tokenFrom.address,
@@ -57,7 +65,7 @@ export function useQuotes(tokensFrom: UseQuotesTokenFrom[], tokenAddressTo: stri
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(tokensFrom), tokenAddressTo, blockNumber])
 
-  return { data: Object.values(quotes), loading: !!loadingCount }
+  return { data: Object.values(quotes).filter(Boolean), loading: !!loadingCount }
 }
 
 export function useAggregateQuotes(quotes: ZapperQuote[]) {
